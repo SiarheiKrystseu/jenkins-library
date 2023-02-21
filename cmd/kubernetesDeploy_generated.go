@@ -33,6 +33,7 @@ type kubernetesDeployOptions struct {
 	HelmDeployWaitSeconds      int                    `json:"helmDeployWaitSeconds,omitempty"`
 	HelmValues                 []string               `json:"helmValues,omitempty"`
 	ValuesMapping              map[string]interface{} `json:"valuesMapping,omitempty"`
+	RenderSubchartNotes        bool                   `json:"renderSubchartNotes,omitempty"`
 	GithubToken                string                 `json:"githubToken,omitempty"`
 	Image                      string                 `json:"image,omitempty"`
 	ImageNames                 []string               `json:"imageNames,omitempty"`
@@ -187,6 +188,7 @@ func addKubernetesDeployFlags(cmd *cobra.Command, stepConfig *kubernetesDeployOp
 	cmd.Flags().IntVar(&stepConfig.HelmDeployWaitSeconds, "helmDeployWaitSeconds", 300, "Number of seconds before helm deploy returns.")
 	cmd.Flags().StringSliceVar(&stepConfig.HelmValues, "helmValues", []string{}, "List of helm values as YAML file reference or URL (as per helm parameter description for `-f` / `--values`)")
 
+	cmd.Flags().BoolVar(&stepConfig.RenderSubchartNotes, "renderSubchartNotes", true, "If set, render subchart notes along with the parent.")
 	cmd.Flags().StringVar(&stepConfig.GithubToken, "githubToken", os.Getenv("PIPER_githubToken"), "GitHub personal access token as per https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line")
 	cmd.Flags().StringVar(&stepConfig.Image, "image", os.Getenv("PIPER_image"), "Full name of the image to be deployed.")
 	cmd.Flags().StringSliceVar(&stepConfig.ImageNames, "imageNames", []string{}, "List of names of the images to be deployed.")
@@ -432,6 +434,15 @@ func kubernetesDeployMetadata() config.StepData {
 						Type:        "map[string]interface{}",
 						Mandatory:   false,
 						Aliases:     []config.Alias{},
+					},
+					{
+						Name:        "renderSubchartNotes",
+						ResourceRef: []config.ResourceReference{},
+						Scope:       []string{"GENERAL", "PARAMETERS", "STAGES", "STEPS"},
+						Type:        "bool",
+						Mandatory:   false,
+						Aliases:     []config.Alias{},
+						Default:     true,
 					},
 					{
 						Name: "githubToken",
