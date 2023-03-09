@@ -378,6 +378,7 @@ def getContainerDefined(config) {
 
 
 boolean isKubernetes() {
+    echo "[MH] is kubernetes: ${Boolean.valueOf(env.ON_K8S)} / ${env.ON_K8S}"
     return Boolean.valueOf(env.ON_K8S)
 }
 
