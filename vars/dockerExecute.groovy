@@ -145,6 +145,7 @@ import groovy.transform.Field
  */
 @GenerateDocumentation
 void call(Map parameters = [:], body) {
+    echo "[MH] parameters: ${parameters}"
     handlePipelineStepErrors(stepName: STEP_NAME, stepParameters: parameters, failOnError: true) {
 
         final script = checkScript(this, parameters) ?: this
@@ -163,6 +164,8 @@ void call(Map parameters = [:], body) {
             .addIfEmpty('sidecarRegistryUrl', config.dockerRegistryUrl)
             .addIfEmpty('sidecarRegistryCredentialsId', config.dockerRegistryCredentialsId)
             .use()
+
+        echo "[MH] config: ${config}"
 
         SidecarUtils sidecarUtils = new SidecarUtils(script)
 
