@@ -70,7 +70,7 @@ void call(Map parameters = [:], body) {
     def message = ''
     try {
         if (config.echoDetails)
-            echo "--- Begin library step of: ${config.stepName} ---"
+            echo "--- Begin library step of: ${config.stepName} in handlePipelineStepErrors ---"
         if (!config.failOnError && config.stepTimeouts?.get(config.stepName)) {
             timeout(time: config.stepTimeouts[config.stepName]) {
                 body()
