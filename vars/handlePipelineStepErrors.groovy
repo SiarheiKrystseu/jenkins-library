@@ -116,6 +116,8 @@ void call(Map parameters = [:], body) {
         // this helps to bring this information to users in a consolidated manner inside a pipeline
         unstableSteps.add(config.stepName)
         cpe?.setValue('unstableSteps', unstableSteps)
+        ex == null
+        echo "--- Set exception to null ---"
     } catch (Throwable error) {
         echo "--- Catching Throwable if config.echoDetails: ${config.echoDetails} ---"
         if (config.echoDetails)
