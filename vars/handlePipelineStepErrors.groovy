@@ -71,6 +71,7 @@ void call(Map parameters = [:], body) {
     try {
         if (config.echoDetails)
             echo "--- Begin library step of: ${config.stepName} in handlePipelineStepErrors ---"
+            echo "--- Error message is: ${message} ---"
         if (!config.failOnError && config.stepTimeouts?.get(config.stepName)) {
             timeout(time: config.stepTimeouts[config.stepName]) {
                 body()
@@ -79,6 +80,9 @@ void call(Map parameters = [:], body) {
             body()
         }
     } catch (AbortException | FlowInterruptedException ex) {
+        echo "--- Catching exception if config.echoDetails: ${config.echoDetails} ---"
+        echo "--- Error message is: ${message} ---"
+
         if (config.echoDetails)
             message += formatErrorMessage(config, ex)
         writeErrorToInfluxData(config, ex)
@@ -87,6 +91,7 @@ void call(Map parameters = [:], body) {
         DebugReport.instance.storeStepFailure(config.stepName, ex, failOnError)
 
         if (failOnError) {
+            echo "--- Throw error, failOnError: ${failOnError} ---"
             throw ex
         }
 
@@ -108,8 +113,10 @@ void call(Map parameters = [:], body) {
         unstableSteps.add(config.stepName)
         cpe?.setValue('unstableSteps', unstableSteps)
     } catch (Throwable error) {
+        echo "--- Catching exception if config.echoDetails: ${config.echoDetails} ---"
         if (config.echoDetails)
             message += formatErrorMessage(config, error)
+        echo "--- Error message is: ${message} ---"
         writeErrorToInfluxData(config, error)
 
         DebugReport.instance.storeStepFailure(config.stepName, error, true)
