@@ -80,11 +80,12 @@ void call(Map parameters = [:], body) {
             body()
         }
     } catch (AbortException | FlowInterruptedException ex) {
-        echo "--- Catching exception if config.echoDetails: ${config.echoDetails} ---"
+        echo "--- Catching AbortException | FlowInterruptedException exception if config.echoDetails: ${config.echoDetails} ---"
         echo "--- Error message is: ${message} ---"
 
         if (config.echoDetails)
             message += formatErrorMessage(config, ex)
+            echo "--- Error message after message += formatErrorMessage(config, ex) is: ${message} ---"
         writeErrorToInfluxData(config, ex)
 
         boolean failOnError = config.failOnError || config.stepName in config.mandatorySteps
@@ -92,6 +93,7 @@ void call(Map parameters = [:], body) {
 
         if (failOnError) {
             echo "--- Throw error, failOnError: ${failOnError} ---"
+            echo "--- Error message is: ${message} ---"
             throw ex
         }
 
@@ -113,7 +115,7 @@ void call(Map parameters = [:], body) {
         unstableSteps.add(config.stepName)
         cpe?.setValue('unstableSteps', unstableSteps)
     } catch (Throwable error) {
-        echo "--- Catching exception if config.echoDetails: ${config.echoDetails} ---"
+        echo "--- Catching Throwable if config.echoDetails: ${config.echoDetails} ---"
         if (config.echoDetails)
             message += formatErrorMessage(config, error)
         echo "--- Error message is: ${message} ---"
@@ -131,6 +133,7 @@ void call(Map parameters = [:], body) {
 
 @NonCPS
 private String formatErrorMessage(Map config, error){
+    echo "--- formatErrorMessage: ${error} ---"
     Map binding = [
         error: error,
         libraryDocumentationUrl: config.libraryDocumentationUrl,
@@ -138,6 +141,11 @@ private String formatErrorMessage(Map config, error){
         stepName: config.stepName,
         stepParameters: (config.stepParameters?.verbose == true) ? config.stepParameters?.toString() : '*** to show step parameters, set verbose:true in general pipeline configuration\n*** WARNING: this may reveal sensitive information. ***'
     ]
+    echo "--- formatting result:: ${GStringTemplateEngine
+        .newInstance()
+        .createTemplate(libraryResource('com.sap.piper/templates/error.log'))
+        .make(binding)
+        .toString()} ---"
     return GStringTemplateEngine
         .newInstance()
         .createTemplate(libraryResource('com.sap.piper/templates/error.log'))
