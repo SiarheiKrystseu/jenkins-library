@@ -82,7 +82,8 @@ void call(Map parameters = [:], body) {
     } catch (AbortException | FlowInterruptedException ex) {
         echo "--- Catching AbortException | FlowInterruptedException exception ---"
         echo "--- Error message is: ${message} ---"
-        echo "--- Exception is: ${ex} ---"
+        echo "--- Exception is: ${ex.toString()} ---"
+        echo "--- Exception.toString() is: ${ex.toString()} ---"
 
         if (config.echoDetails)
             message += formatErrorMessage(config, ex)
