@@ -141,11 +141,7 @@ private String formatErrorMessage(Map config, error){
         stepName: config.stepName,
         stepParameters: (config.stepParameters?.verbose == true) ? config.stepParameters?.toString() : '*** to show step parameters, set verbose:true in general pipeline configuration\n*** WARNING: this may reveal sensitive information. ***'
     ]
-    echo "--- formatting result:: ${GStringTemplateEngine
-        .newInstance()
-        .createTemplate(libraryResource('com.sap.piper/templates/error.log'))
-        .make(binding)
-        .toString()} ---"
+
     return GStringTemplateEngine
         .newInstance()
         .createTemplate(libraryResource('com.sap.piper/templates/error.log'))
