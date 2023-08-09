@@ -82,7 +82,7 @@ void call(Map parameters = [:], body) {
     } catch (AbortException | FlowInterruptedException ex) {
         echo "--- Catching AbortException | FlowInterruptedException exception ---"
         echo "--- Error message is: ${message} ---"
-        echo "--- Exception is: ${ex.toString()} ---"
+        echo "--- Exception is: ${ex} ---"
         echo "--- Exception.toString() is: ${ex.toString()} ---"
 
         if (config.echoDetails)
@@ -96,7 +96,7 @@ void call(Map parameters = [:], body) {
         if (failOnError) {
             echo "--- Throw error, failOnError: ${failOnError} ---"
             echo "--- Error message is: ${message} ---"
-            throw ex
+            throw new AbortException("New exception: ${ex.toString()}")
         }
 
         def failureMessage = "[${STEP_NAME}] Error in step ${config.stepName} - Build result set to 'UNSTABLE'"
