@@ -80,12 +80,15 @@ void call(Map parameters = [:], String stepName, String metadataFile, List crede
                                     sh "${piperGoPath} ${stepName}${defaultConfigArgs}${customConfigArg}"
                                 }
                             } finally {
+                                echo "Started jenkinsUtils.handleStepResults(stepName, failOnMissingReports, failOnMissingLinks)"
                                 jenkinsUtils.handleStepResults(stepName, failOnMissingReports, failOnMissingLinks)
                             }
                         } finally {
+                           echo "Started readPipelineEnv(script: script, piperGoPath: piperGoPath)"
                            readPipelineEnv(script: script, piperGoPath: piperGoPath)
                         }
                     } finally {
+                        echo "Started InfluxData.readFromDisk(script)"
                         InfluxData.readFromDisk(script)
                         stash name: 'pipelineStepReports', includes: '.pipeline/stepReports/**', allowEmpty: true
                     }
@@ -282,9 +285,10 @@ void handleErrorDetails(String stepName, Closure body) {
                 errorCategory = " (category: ${errorDetails.category})"
                 DebugReport.instance.failedBuild.category = errorDetails.category
             }
-            echo "Ovveride errorDetails.json"
-            error "[${stepName}] Step execution failed${errorCategory}. Error: ${errorDetails.error}"
+            echo "Ovveride errorDetails.json: ${errorDetails.message}"
+            error "[${stepName}] Step execution failed${errorCategory}. Error: ${errorDetails.message}"
         }
+        echo "Ovverided errorDetails.json"
         error "[${stepName}] Step execution failed. Error: ${ex}, please see log file for more details."
     }
 }
