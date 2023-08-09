@@ -286,7 +286,7 @@ void handleErrorDetails(String stepName, Closure body) {
                 DebugReport.instance.failedBuild.category = errorDetails.category
             }
             echo "Ovveride errorDetails.json: ${errorDetails.message}"
-            error "[${stepName}] Step execution failed${errorCategory}. Error: ${errorDetails.message}"
+            error "[${stepName}] Step execution failed${errorCategory}. Error: ${ex.getMessage()}"
         }
         echo "Ovverided errorDetails.json"
         error "[${stepName}] Step execution failed. Error: ${ex}, please see log file for more details."
